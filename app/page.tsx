@@ -1,9 +1,8 @@
-'use client'; // Add this directive for components with hooks
+'use client';
 
 import React, { useState, useEffect, useRef, JSX } from 'react';
-import Image from 'next/image'; // Import the Next.js Image component
+import Image from 'next/image';
 
-// --- Type Definitions ---
 type Role = "Inventory Planner" | "Replenisher" | "Sales" | "Warehouse Operator";
 
 interface Message {
@@ -18,10 +17,8 @@ interface ChatSession {
   timestamp: number;
 }
 
-// --- Configuration ---
 const API_CHAT_ENDPOINT = "/api/chat";
 
-// --- SVG Icons as React Components ---
 const Icons: { [key in Role]: () => JSX.Element } = {
   "Inventory Planner": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
   "Replenisher": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>,
@@ -29,7 +26,6 @@ const Icons: { [key in Role]: () => JSX.Element } = {
   "Warehouse Operator": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
 };
 
-// --- Role Definitions (Translated to English) ---
 const ROLE_DETAILS: { [key in Role]: { description: string } } = {
     "Inventory Planner": { description: "Strategic assistant for forecasting, auto-dashboards, and scenario simulation." },
     "Replenisher": { description: "Operational aide for stock checks, forecast reviews, and order calculation." },
@@ -58,14 +54,12 @@ const CustomCSS = () => (
 );
 
 
-// --- Main App Component ---
 export default function App() {
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
 
-  // Load history from localStorage on initial render
   useEffect(() => {
     try {
       const savedHistory = localStorage.getItem('synapseChatHistory');
@@ -73,7 +67,6 @@ export default function App() {
     } catch (error) { console.error("Could not load chat history:", error); }
   }, []);
 
-  // Save history to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('synapseChatHistory', JSON.stringify(chatHistory));
@@ -168,7 +161,6 @@ export default function App() {
   );
 }
 
-// --- Component Prop Types & Components ---
 interface RoleSelectionScreenProps { onStartNewChat: (role: Role) => void; }
 function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScreenProps) {
   return (
@@ -264,9 +256,9 @@ function ChatScreen({ session, chatHistory, input, setInput, isLoading, onSendMe
 
       <div className="flex-1 flex flex-col h-full">
         <header className="flex justify-between items-center p-3 border-b border-[#333333] flex-shrink-0">
-           <button onClick={() => setIsSidebarOpen(true)} className="p-2 md:hidden text-gray-400 hover:text-white">
-             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-           </button>
+          <button onClick={() => setIsSidebarOpen(true)} className="p-2 md:hidden text-gray-400 hover:text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
           <span className="font-semibold md:hidden">{session.role}</span>
           <Image src="/synapse.png" alt="Synapse Logo" width={128} height={32} className="w-32 ml-auto" />
         </header>
