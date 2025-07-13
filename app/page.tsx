@@ -1,8 +1,9 @@
-'use client';
+'use client'; // Add this directive for components with hooks
 
 import React, { useState, useEffect, useRef, JSX } from 'react';
-import Image from 'next/image';
+import Image from 'next/image'; // Import the Next.js Image component
 
+// --- Type Definitions ---
 type Role = "Inventory Planner" | "Replenisher" | "Sales" | "Warehouse Operator";
 
 interface Message {
@@ -17,8 +18,10 @@ interface ChatSession {
   timestamp: number;
 }
 
+// --- Configuration ---
 const API_CHAT_ENDPOINT = "/api/chat";
 
+// --- SVG Icons as React Components ---
 const Icons: { [key in Role]: () => JSX.Element } = {
   "Inventory Planner": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>,
   "Replenisher": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v6h6"/><path d="M21 12A9 9 0 0 0 6 5.3L3 8"/><path d="M21 22v-6h-6"/><path d="M3 12a9 9 0 0 0 15 6.7l3-2.7"/></svg>,
@@ -26,19 +29,22 @@ const Icons: { [key in Role]: () => JSX.Element } = {
   "Warehouse Operator": () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>,
 };
 
+// --- Role Definitions (Translated to English) ---
 const ROLE_DETAILS: { [key in Role]: { description: string } } = {
-    "Inventory Planner": { description: "วิเคราะห์ข้อมูลเพื่อวางแผนและจัดการสต็อกสินค้า" },
-    "Replenisher": { description: "เติมสินค้าและรักษาระดับสต็อกให้เหมาะสม" },
-    "Sales": { description: "สร้างยอดขายและรักษาความสัมพันธ์กับลูกค้า" },
-    "Warehouse Operator": { description: "บริหารจัดการสินค้าในคลังและดูแลการปฏิบัติงาน" },
+    "Inventory Planner": { description: "Strategic assistant for forecasting, auto-dashboards, and scenario simulation." },
+    "Replenisher": { description: "Operational aide for stock checks, forecast reviews, and order calculation." },
+    "Sales": { description: "Sales support for downgrade alerts and sales forecasting." },
+    "Warehouse Operator": { description: "Warehouse assistant for overflow alerts, I/O predictions, and layout optimization." },
 };
 
+// --- Custom CSS Component ---
 const CustomCSS = () => (
   <style jsx global>{`
-    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     body {
-        font-family: 'Prompt', sans-serif;
+        font-family: 'Inter', sans-serif;
     }
+    /* Keyframes for the loading animation */
     @keyframes audio-wave {
       0% { transform: scaleY(0.3); }
       30% { transform: scaleY(1.0); }
@@ -51,12 +57,15 @@ const CustomCSS = () => (
   `}</style>
 );
 
+
+// --- Main App Component ---
 export default function App() {
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
   const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [input, setInput] = useState<string>('');
 
+  // Load history from localStorage on initial render
   useEffect(() => {
     try {
       const savedHistory = localStorage.getItem('synapseChatHistory');
@@ -64,6 +73,7 @@ export default function App() {
     } catch (error) { console.error("Could not load chat history:", error); }
   }, []);
 
+  // Save history to localStorage whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem('synapseChatHistory', JSON.stringify(chatHistory));
@@ -116,14 +126,14 @@ export default function App() {
       });
       if (!response.ok) throw new Error(`API call failed with status: ${response.status}`);
       const data = await response.json();
-      const assistantMessage: Message = { role: 'assistant', content: data.output || "ขออภัยค่ะ ไม่สามารถเชื่อมต่อได้" };
+      const assistantMessage: Message = { role: 'assistant', content: data.output || "Sorry, a connection could not be established." };
       const finalMessages = [...updatedMessages, assistantMessage];
       const finalSession = { ...updatedSession, messages: finalMessages };
       setActiveSession(finalSession);
       setChatHistory(prev => prev.map(s => s.sessionId === activeSession.sessionId ? finalSession : s));
     } catch (error) {
       console.error("Failed to send message:", error);
-      const errorMessage: Message = { role: 'assistant', content: "เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง" };
+      const errorMessage: Message = { role: 'assistant', content: "A connection error occurred. Please try again." };
       const errorMessages = [...updatedMessages, errorMessage];
       const errorSession = { ...updatedSession, messages: errorMessages };
       setActiveSession(errorSession);
@@ -158,6 +168,7 @@ export default function App() {
   );
 }
 
+// --- Component Prop Types & Components ---
 interface RoleSelectionScreenProps { onStartNewChat: (role: Role) => void; }
 function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScreenProps) {
   return (
@@ -165,7 +176,7 @@ function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScreenProps) {
       <Image src="/exxon.png" alt="ExxonMobil Logo" width={64} height={64} className="w-16 absolute top-6 right-6 opacity-50" />
       <div className="w-full max-w-md text-center">
         <Image src="/synapse.png" alt="Synapse Logo" width={192} height={48} className="w-48 mx-auto mb-4" />
-        <h2 className="text-3xl font-bold mb-8">เลือกบทบาทของคุณ</h2>
+        <h2 className="text-3xl font-bold mb-8">Select Your Role</h2>
         <div className="space-y-6">
           {(Object.keys(ROLE_DETAILS) as Role[]).map((role) => {
             const Icon = Icons[role];
@@ -224,7 +235,7 @@ function ChatScreen({ session, chatHistory, input, setInput, isLoading, onSendMe
     <div className="relative flex h-screen bg-[#121212] text-white overflow-hidden">
       <aside className={`absolute md:relative z-20 md:z-auto flex-shrink-0 w-80 bg-[#1E1E1E] border-r border-[#333333] flex flex-col h-full transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
         <div className="flex justify-between items-center p-4 border-b border-[#333333]">
-          <h2 className="text-lg font-semibold">ประวัติการสนทนา</h2>
+          <h2 className="text-lg font-semibold">Chat History</h2>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 text-gray-400 hover:text-white">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
@@ -242,20 +253,20 @@ function ChatScreen({ session, chatHistory, input, setInput, isLoading, onSendMe
         </div>
         <div className="p-4 border-t border-[#333333] space-y-2">
           <button onClick={onGoHome} className="w-full px-4 py-2 bg-[#121212] border border-[#333333] rounded-lg text-sm hover:bg-[#2a2a2a] transition-colors">
-            เลือกบทบาทใหม่
+            Select New Role
           </button>
           <button onClick={onClearAllHistory} className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-transparent border border-red-800 text-red-400 rounded-lg text-sm hover:bg-red-900/50 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 9l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><line x1="18" y1="12.5" x2="12" y2="12.5"></line><line x1="12" y1="12.5" x2="12" y2="18.5"></line><line x1="12" y1="12.5" x2="6" y2="12.5"></line></svg>
-            ล้างประวัติทั้งหมด
+            Clear All History
           </button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col h-full">
         <header className="flex justify-between items-center p-3 border-b border-[#333333] flex-shrink-0">
-          <button onClick={() => setIsSidebarOpen(true)} className="p-2 md:hidden text-gray-400 hover:text-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
+           <button onClick={() => setIsSidebarOpen(true)} className="p-2 md:hidden text-gray-400 hover:text-white">
+             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+           </button>
           <span className="font-semibold md:hidden">{session.role}</span>
           <Image src="/synapse.png" alt="Synapse Logo" width={128} height={32} className="w-32 ml-auto" />
         </header>
@@ -282,7 +293,7 @@ function ChatScreen({ session, chatHistory, input, setInput, isLoading, onSendMe
 
         <footer className="p-4 flex-shrink-0">
           <form onSubmit={onSendMessage} className="flex items-center bg-[#1E1E1E] border border-[#333333] rounded-xl p-2">
-            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder={`คุยในฐานะ ${session.role}...`} className="w-full bg-transparent focus:outline-none px-2" disabled={isLoading} />
+            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder={`Chatting as ${session.role}...`} className="w-full bg-transparent focus:outline-none px-2" disabled={isLoading} />
             <button type="submit" className="p-2 bg-[#E50914] rounded-lg disabled:bg-gray-500" disabled={isLoading}>
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             </button>
