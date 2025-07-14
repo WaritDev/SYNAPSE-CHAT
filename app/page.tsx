@@ -20,23 +20,62 @@ const CustomCSS = () => (
     .audio-wave-bar {
       animation: audio-wave 1.3s infinite ease-in-out;
     }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .message-container {
+        animation: fadeIn 0.5s ease-out;
+    }
 
-    /* Basic Markdown Styles for Dark Theme */
+    /* Gemini-style Markdown Table */
+    .prose table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1em;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      border: 1px solid #333;
+    }
+    .prose th, .prose td {
+      border: none;
+      border-bottom: 1px solid #333;
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    .prose thead {
+      background-color: #2a2a2a;
+    }
+    .prose thead th {
+      font-weight: 600;
+      color: white;
+    }
+    .prose tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Other Prose Styles */
     .prose {
-      color: #E0E0E0; /* --text-color */
+      color: #E0E0E0;
+    }
+    .prose p {
+        margin: 0;
     }
     .prose h1, .prose h2, .prose h3, .prose h4, .prose strong {
       color: white;
+      margin-top: 1em;
+      margin-bottom: 0.5em;
     }
     .prose a {
-      color: #F87171; /* A lighter red for links */
+      color: #F87171;
     }
     .prose code {
-      background-color: #333;
+      background-color: #121212;
       padding: 0.2em 0.4em;
       margin: 0 0.1em;
       border-radius: 3px;
       font-size: 85%;
+      border: 1px solid #333;
     }
     .prose pre {
       background-color: #2a2a2a;
@@ -48,23 +87,11 @@ const CustomCSS = () => (
         background-color: transparent;
         padding: 0;
         margin: 0;
+        border: none;
     }
     .prose ul, .prose ol {
       padding-left: 1.5em;
-    }
-    .prose li > p {
-        margin: 0;
-    }
-    .prose table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .prose th, .prose td {
-      border: 1px solid #444;
-      padding: 0.5em 1em;
-    }
-    .prose th {
-      background-color: #333;
+      margin-top: 0.5em;
     }
   `}</style>
 );
