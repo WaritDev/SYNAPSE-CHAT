@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { ChatSession} from '@/app/lib/types';
+import ReactMarkdown from 'react-markdown';
+import { ChatSession } from '@/app/lib/types';
 import LoadingIndicator from './LoadingIndicator';
 
 interface ChatScreenProps {
@@ -27,7 +28,6 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
 
     return (
         <div className="relative flex h-screen bg-[#121212] text-white overflow-hidden font-['Inter']">
-        {/* Sidebar for Chat History */}
         <aside className={`absolute md:relative z-20 md:z-auto flex-shrink-0 w-80 bg-[#1E1E1E] border-r border-[#333333] flex flex-col h-full transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
             <div className="flex justify-between items-center p-4 border-b border-[#333333]">
             <h2 className="text-lg font-semibold">Chat History</h2>
@@ -72,7 +72,14 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                 {session.messages.map((msg, index) => (
                 <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div className={`max-w-xl p-3 rounded-lg ${msg.role === 'user' ? 'bg-[#E50914] text-white' : 'bg-[#1E1E1E] text-[#E0E0E0]'}`}>
-                    {msg.content}
+                    {/* Apply prose class only to assistant messages for Markdown rendering */}
+                    <div className={`${msg.role === 'assistant' ? 'prose prose-invert' : ''} break-words`}>
+                        {msg.role === 'assistant' ? (
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                        ) : (
+                        msg.content
+                        )}
+                    </div>
                     </div>
                 </div>
                 ))}
