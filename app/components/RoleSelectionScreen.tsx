@@ -10,7 +10,7 @@ interface RoleSelectionScreenProps {
 export default function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScreenProps) {
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-[#121212] text-white p-4 font-['Inter']">
-        <Image src="/exxon.png" alt="ExxonMobil Logo" width={64} height={64} className="w-16 absolute top-6 right-6 opacity-50" />
+        <Image src="/exxon.png" alt="ExxonMobil Logo" width={64} height={64} className="w-16 absolute top-6 right-6" />
         <div className="w-full max-w-md text-center">
             <Image src="/synapse.png" alt="Synapse Logo" width={192} height={48} className="w-48 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-8">Select Your Role</h2>
