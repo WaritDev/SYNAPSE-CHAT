@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { Role } from '@/app/lib/types';
 import { Icons, ROLE_DETAILS } from '@/app/lib/constants';
 
@@ -10,10 +11,16 @@ interface RoleSelectionScreenProps {
 export default function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScreenProps) {
     return (
         <div className="flex flex-col justify-center items-center min-h-screen bg-[#121212] text-white p-4 font-['Inter']">
-        <Image src="/exxon.png" alt="ExxonMobil Logo" width={64} height={64} className="w-16 absolute top-6 right-6" />
+        <Image src="/exxon.png" alt="ExxonMobil Logo" width={64} height={64} className="w-16 absolute top-6 right-6 opacity-100" />
         <div className="w-full max-w-md text-center">
             <Image src="/synapse.png" alt="Synapse Logo" width={192} height={48} className="w-48 mx-auto mb-4" />
-            <h2 className="text-3xl font-bold mb-8">Select Your Role</h2>
+            <h2 className="text-3xl font-bold mb-8">Select Your Destination</h2>
+
+            <Link href="/dashboard" className="w-full text-center block p-4 mb-8 bg-[#E50914] border border-transparent rounded-2xl hover:bg-red-700 transition-all duration-300">
+                <p className="font-semibold text-lg text-white">View Master Dashboard</p>
+                <p className="text-sm text-red-100">Access high-level analytics and overviews.</p>
+            </Link>
+
             <div className="space-y-6">
             {(Object.keys(ROLE_DETAILS) as Role[]).map((role) => {
                 const Icon = Icons[role];
@@ -23,7 +30,7 @@ export default function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScr
                     <Icon />
                     </div>
                     <div>
-                    <p className="font-semibold text-lg text-[#E0E0E0]">{role}</p>
+                    <p className="font-semibold text-lg text-[#E0E0E0]">Chat as {role}</p>
                     <p className="text-sm text-[#888888]">{ROLE_DETAILS[role].description}</p>
                     </div>
                 </button>
