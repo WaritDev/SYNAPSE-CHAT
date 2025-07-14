@@ -1,8 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
-import { ChatSession } from '@/app/lib/types';
+import remarkGfm from 'remark-gfm';
+import { ChatSession} from '@/app/lib/types';
 import LoadingIndicator from './LoadingIndicator';
+
+const AssistantAvatar = () => (
+    <div className="w-8 h-8 flex-shrink-0 rounded-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3v2.35M12 18.65V21"/>
+            <path d="M18.65 12H21M3 12h2.35"/>
+            <path d="m16.83 7.17-1.41-1.41M8.59 15.41l-1.41-1.41"/>
+            <path d="m7.17 7.17-1.41 1.41M15.41 15.41l1.41 1.41"/>
+        </svg>
+    </div>
+);
 
 interface ChatScreenProps {
     session: ChatSession;
@@ -57,8 +69,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
             </div>
         </aside>
 
-        {/* Main Chat Area */}
-        <div className="flex-1 flex flex-col h-full">
+        <div className="flex-1 flex flex-col h-screen overflow-hidden">
             <header className="flex justify-between items-center p-3 border-b border-[#333333] flex-shrink-0">
             <button onClick={() => setIsSidebarOpen(true)} className="p-2 md:hidden text-gray-400 hover:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -67,24 +78,41 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
             <Image src="/synapse.png" alt="Synapse Logo" width={128} height={32} className="w-32 ml-auto" />
             </header>
 
-            <main className="flex-grow p-4 overflow-y-auto">
-            <div className="space-y-4">
+            <main className="flex-grow p-4 overflow-y-auto min-h-0">
+            <div className="space-y-6">
                 {session.messages.map((msg, index) => (
-                <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-xl p-3 rounded-lg ${msg.role === 'user' ? 'bg-[#E50914] text-white' : 'bg-[#1E1E1E] text-[#E0E0E0]'}`}>
-                    {/* Apply prose class only to assistant messages for Markdown rendering */}
-                    <div className={`${msg.role === 'assistant' ? 'prose prose-invert' : ''} break-words`}>
-                        {msg.role === 'assistant' ? (
-                        <ReactMarkdown>{msg.content}</ReactMarkdown>
-                        ) : (
-                        msg.content
-                        )}
+                <div key={index} className={`flex items-start gap-4 message-container ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    {msg.role === 'assistant' && <AssistantAvatar />}
+                    
+                    {msg.role === 'user' && (
+                    <div className="max-w-xl rounded-lg bg-[#E50914] text-white p-3 break-words">
+                        {msg.content}
                     </div>
+                    )}
+
+                    {msg.role === 'assistant' && (
+                    <div className="max-w-xl rounded-lg bg-transparent text-[#E0E0E0] min-w-0">
+                        <div className="prose prose-sm prose-invert break-words">
+                        <ReactMarkdown 
+                            remarkPlugins={[remarkGfm]}
+                            components={{
+                            table: ({ ...props}) => (
+                                <div className="overflow-x-auto rounded-lg border border-[#333333]">
+                                <table className="my-0" {...props} />
+                                </div>
+                            )
+                            }}
+                        >
+                            {msg.content}
+                        </ReactMarkdown>
+                        </div>
                     </div>
+                    )}
                 </div>
                 ))}
                 {isLoading && (
-                <div className="flex justify-start">
+                <div className="flex items-start gap-4">
+                    <AssistantAvatar />
                     <div className="p-3 rounded-lg bg-[#1E1E1E] text-[#E0E0E0]">
                     <LoadingIndicator />
                     </div>
