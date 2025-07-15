@@ -53,7 +53,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
     }, [isSidebarOpen]);
 
     return (
-        <div className="relative flex h-screen h-[100dvh] bg-[#121212] text-white overflow-hidden font-['Inter']">
+        <div className="relative flex h-[100dvh] bg-[#121212] text-white overflow-hidden font-['Inter']">
             {isSidebarOpen && (
                 <div 
                     className="fixed inset-0 bg-black bg-opacity-50 z-10 md:hidden"
@@ -144,7 +144,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                     />
                 </header>
 
-                <main className="flex-grow p-3 md:p-4 overflow-y-auto min-h-0">
+                <main className="flex-grow p-3 md:p-4 overflow-y-auto">
                     <div className="space-y-4 md:space-y-6">
                         {session.messages.map((msg, index) => (
                             <div key={index} className={`flex items-start gap-3 md:gap-4 message-container ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -157,103 +157,36 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                                 )}
 
                                 {msg.role === 'assistant' && (
-                                <div className="max-w-[85%] md:max-w-4xl rounded-lg bg-transparent text-[#E8E8E8] min-w-0">
-                                    <div className="break-words max-w-none text-[#E8E8E8] [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                                    <ReactMarkdown
-                                        remarkPlugins={[remarkGfm]}
-                                        components={{
-                                        h1: ({ ...props }) => (
-                                            <h1
-                                            className="text-[clamp(1.75rem,2.5vw,2.25rem)] font-bold mb-6 mt-8 text-white border-b border-[#333333] pb-3"
-                                            {...props}
-                                            />
-                                        ),
-                                        h2: ({ ...props }) => (
-                                            <h2
-                                            className="text-[clamp(1.5rem,2vw,2rem)] font-semibold mb-4 mt-8 text-white"
-                                            {...props}
-                                            />
-                                        ),
-                                        h3: ({ ...props }) => (
-                                            <h3
-                                            className="text-[clamp(1.25rem,1.8vw,1.5rem)] font-medium mb-3 mt-6 text-white"
-                                            {...props}
-                                            />
-                                        ),
-                                        h4: ({ ...props }) => (
-                                            <h4
-                                            className="text-[clamp(1.1rem,1.5vw,1.25rem)] font-medium mb-2 mt-5 text-white"
-                                            {...props}
-                                            />
-                                        ),
-                                        p: ({ ...props }) => (
-                                            <p
-                                            className="text-[clamp(1rem,1.2vw,1.125rem)] leading-[1.7] mb-6 text-[#E8E8E8] first:mt-0"
-                                            {...props}
-                                            />
-                                        ),
-                                        ul: ({ ...props }) => (
-                                            <ul
-                                            className="mb-6 mt-4 space-y-2 pl-0 list-none [&>li]:relative [&>li]:pl-6 [&>li]:before:content-['•'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-[#E50914] [&>li]:before:font-bold [&>li]:before:text-lg"
-                                            {...props}
-                                            />
-                                        ),
-                                        ol: ({ ...props }) => (
-                                            <ol
-                                            className="mb-6 mt-4 space-y-2 pl-0 list-none counter-reset-[item] [&>li]:relative [&>li]:pl-6 [&>li]:before:content-[counter(item)'.'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-[#E50914] [&>li]:before:font-semibold [&>li]:before:counter-increment-[item]"
-                                            {...props}
-                                            />
-                                        ),
-                                        li: ({ ...props }) => (
-                                            <li
-                                            className="text-[clamp(1rem,1.2vw,1.125rem)] text-[#E8E8E8] leading-[1.7] mb-2 last:mb-0"
-                                            {...props}
-                                            />
-                                        ),
-                                        pre: ({ ...props }) => (
-                                            <div className="my-6 rounded-lg bg-[#1A1A1A] border border-[#333333] overflow-hidden">
-                                            <pre
-                                                className="p-4 overflow-x-auto text-[clamp(0.875rem,1vw,1rem)] leading-[1.5] text-[#F8F8F2] m-0"
-                                                {...props}
-                                            />
-                                            </div>
-                                        ),
-                                        code: ({ ...props }) => (
-                                            <code className="bg-[#2A2A2A] text-[#F8F8F2] px-1.5 py-0.5 rounded text-[clamp(0.9rem,1vw,1rem)] font-mono" {...props} />
-                                        ),
-                                        table: ({ ...props }) => (
-                                            <div className="my-6 overflow-x-auto rounded-lg border border-[#333333]">
-                                            <table className="min-w-full text-[clamp(0.95rem,1.1vw,1.1rem)]" {...props} />
-                                            </div>
-                                        ),
-                                        thead: ({ ...props }) => <thead className="bg-[#1A1A1A]" {...props} />,
-                                        th: ({ ...props }) => (
-                                            <th className="px-4 py-3 text-left font-semibold text-white border-b border-[#333333]" {...props} />
-                                        ),
-                                        td: ({ ...props }) => (
-                                            <td className="px-4 py-3 border-b border-[#333333] text-[#E8E8E8] leading-[1.6]" {...props} />
-                                        ),
-                                        blockquote: ({ ...props }) => (
-                                            <blockquote className="my-6 pl-6 border-l-4 border-[#E50914] bg-[#1A1A1A] py-4 rounded-r-lg italic text-[#D0D0D0]" {...props} />
-                                        ),
-                                        a: ({ ...props }) => (
-                                            <a className="text-[#E50914] hover:text-[#FF1A2E] underline underline-offset-2 transition-colors" {...props} />
-                                        ),
-                                        strong: ({ ...props }) => (
-                                            <strong className="font-semibold text-white" {...props} />
-                                        ),
-                                        em: ({ ...props }) => (
-                                            <em className="italic text-[#F0F0F0]" {...props} />
-                                        ),
-                                        hr: ({ ...props }) => (
-                                            <hr className="my-8 border-[#333333] border-t-2" {...props} />
-                                        ),
-                                        }}
-                                    >
-                                        {msg.content}
-                                    </ReactMarkdown>
+                                    <div className="max-w-[85%] md:max-w-4xl rounded-lg bg-transparent text-[#E8E8E8] min-w-0">
+                                        <div className="break-words max-w-none text-[#E8E8E8]">
+                                            <ReactMarkdown 
+                                                remarkPlugins={[remarkGfm]}
+                                                components={{
+                                                    h1: ({ ...props }) => <h1 className="text-2xl md:text-3xl font-bold mb-6 mt-8 first:mt-0 text-white border-b border-[#333333] pb-3" {...props} />,
+                                                    h2: ({ ...props }) => <h2 className="text-xl md:text-2xl font-semibold mb-4 mt-8 first:mt-0 text-white" {...props} />,
+                                                    h3: ({ ...props }) => <h3 className="text-lg md:text-xl font-medium mb-3 mt-6 first:mt-0 text-white" {...props} />,
+                                                    h4: ({ ...props }) => <h4 className="text-base md:text-lg font-medium mb-2 mt-5 first:mt-0 text-white" {...props} />,
+                                                    p: ({ ...props }) => <p className="mb-6 leading-[1.7] text-[#E8E8E8] text-base md:text-lg first:mt-0" {...props} />,
+                                                    ul: ({ ...props }) => <ul className="mb-6 mt-4 space-y-2 pl-0 list-none [&>li]:relative [&>li]:pl-6 [&>li]:before:content-['•'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-[#E50914] [&>li]:before:font-bold [&>li]:before:text-lg" {...props} />,
+                                                    ol: ({ ...props }) => <ol className="mb-6 mt-4 space-y-2 list-decimal pl-6 marker:text-[#E50914] marker:font-semibold" {...props} />,
+                                                    li: ({ ...props }) => <li className="text-[#E8E8E8] leading-[1.7] text-base md:text-lg mb-2 last:mb-0" {...props} />,
+                                                    pre: ({ ...props }) => <div className="my-6 rounded-lg bg-[#1A1A1A] border border-[#333333] overflow-hidden"><pre className="p-4 overflow-x-auto text-sm md:text-base leading-[1.5] text-[#F8F8F2] m-0" {...props} /></div>,
+                                                    code: ({ ...props }) => <code className="bg-[#2A2A2A] text-[#F8F8F2] px-1.5 py-0.5 rounded text-sm md:text-base font-mono" {...props} />,
+                                                    table: ({ ...props }) => <div className="my-6 overflow-x-auto rounded-lg border border-[#333333]"><table className="min-w-full text-sm md:text-base" {...props} /></div>,
+                                                    thead: ({ ...props }) => <thead className="bg-[#1A1A1A]" {...props} />,
+                                                    th: ({ ...props }) => <th className="px-4 py-3 text-left font-semibold text-white border-b border-[#333333]" {...props} />,
+                                                    td: ({ ...props }) => <td className="px-4 py-3 border-b border-[#333333] text-[#E8E8E8] leading-[1.6]" {...props} />,
+                                                    blockquote: ({ ...props }) => <blockquote className="my-6 pl-6 border-l-4 border-[#E50914] bg-[#1A1A1A] py-4 rounded-r-lg italic text-[#D0D0D0]" {...props} />,
+                                                    a: ({ ...props }) => <a className="text-[#E50914] hover:text-[#FF1A2E] underline underline-offset-2 transition-colors" {...props} />,
+                                                    strong: ({ ...props }) => <strong className="font-semibold text-white" {...props} />,
+                                                    em: ({ ...props }) => <em className="italic text-[#F0F0F0]" {...props} />,
+                                                    hr: ({ ...props }) => <hr className="my-8 border-[#333333] border-t-2" {...props} />,
+                                                }}
+                                            >
+                                                {msg.content}
+                                            </ReactMarkdown>
+                                        </div>
                                     </div>
-                                </div>
                                 )}
                             </div>
                         ))}
