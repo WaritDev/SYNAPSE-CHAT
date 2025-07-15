@@ -209,7 +209,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                             value={input} 
                             onChange={(e) => setInput(e.target.value)} 
                             placeholder={`Chatting as ${session.role}...`} 
-                            className="w-full bg-transparent focus:outline-none px-2 text-sm md:text-base" 
+                            className="w-full bg-transparent focus:outline-none px-2 text-base" 
                             disabled={isLoading} 
                         />
                         <button 
