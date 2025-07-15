@@ -30,7 +30,7 @@ export default function RoleSelectionScreen({ onStartNewChat }: RoleSelectionScr
                     <Icon />
                     </div>
                     <div>
-                    <p className="font-semibold text-lg text-[#E0E0E0]">Chat as {role}</p>
+                    <p className="font-semibold text-lg text-[#E0E0E0]">{role}</p>
                     <p className="text-sm text-[#888888]">{ROLE_DETAILS[role].description}</p>
                     </div>
                 </button>

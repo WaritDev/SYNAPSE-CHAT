@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import Pusher from 'pusher-js';
 import { Role, Message, ChatSession } from '@/app/lib/types';
-import { API_CHAT_ENDPOINT } from '@/app/lib/constants';
+import { API_CHAT_ENDPOINT, ROLE_DETAILS } from '@/app/lib/constants';
 
 export function useChat() {
   const [activeSession, setActiveSession] = useState<ChatSession | null>(null);
@@ -11,40 +12,107 @@ export function useChat() {
   useEffect(() => {
     try {
       const savedHistory = localStorage.getItem('synapseChatHistory');
-      if (savedHistory) setChatHistory(JSON.parse(savedHistory));
-    } catch (error) { console.error("Could not load chat history:", error); }
+      if (savedHistory) {
+        setChatHistory(JSON.parse(savedHistory));
+      }
+    } catch (error) {
+      console.error("Could not load chat history:", error);
+    }
   }, []);
 
   useEffect(() => {
     if (chatHistory.length > 0) {
-      try {
-        localStorage.setItem('synapseChatHistory', JSON.stringify(chatHistory));
-      } catch (error) { console.error("Could not save chat history:", error); }
+      localStorage.setItem('synapseChatHistory', JSON.stringify(chatHistory));
     } else {
       localStorage.removeItem('synapseChatHistory');
     }
   }, [chatHistory]);
 
-  const startNewChat = (role: Role) => {
-    const newSession: ChatSession = {
-      sessionId: `${role.replace(/\s+/g, '-')}-${crypto.randomUUID()}`,
-      role: role,
-      messages: [],
-      timestamp: Date.now(),
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_PUSHER_KEY || !process.env.NEXT_PUBLIC_PUSHER_CLUSTER) {
+        console.error("Pusher environment variables are not set.");
+        return;
+    }
+
+    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY, {
+      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER,
+    });
+
+    const channels = (Object.keys(ROLE_DETAILS) as Role[]).map(role => {
+        const channelName = `chat-notifications-${role}`;
+        const channel = pusher.subscribe(channelName);
+        
+        channel.bind('new-alert', (data: { content: string }) => {
+            const notificationMessage: Message = {
+                role: 'assistant',
+                content: `🔔 **Alert:** ${data.content}`
+            };
+
+            setChatHistory(prevHist => {
+                let sessionUpdated = false;
+                const updatedHistory = prevHist.map(session => {
+                    if (session.role === role) {
+                        sessionUpdated = true;
+                        return { ...session, messages: [...session.messages, notificationMessage], timestamp: Date.now() };
+                    }
+                    return session;
+                });
+
+                if (!sessionUpdated) {
+                    const newSession: ChatSession = {
+                        sessionId: role,
+                        role: role,
+                        messages: [notificationMessage],
+                        timestamp: Date.now(),
+                    };
+                    return [newSession, ...updatedHistory];
+                }
+                
+                return updatedHistory.sort((a, b) => b.timestamp - a.timestamp);
+            });
+        });
+        return channel;
+    });
+
+    return () => {
+        channels.forEach(channel => pusher.unsubscribe(channel.name));
+        pusher.disconnect();
     };
-    setActiveSession(newSession);
+  }, []);
+
+  const startNewChat = (role: Role) => {
+    const existingSession = chatHistory.find(session => session.role === role);
+
+    if (existingSession) {
+      setActiveSession(existingSession);
+    } else {
+      const newSession: ChatSession = {
+        sessionId: role,
+        role: role,
+        messages: [
+          { role: 'assistant', content: `Hello! I'm your AI assistant for the **${role}** role. How can I help you today?` }
+        ],
+        timestamp: Date.now(),
+      };
+      setChatHistory(prev => [newSession, ...prev].sort((a, b) => b.timestamp - a.timestamp));
+      setActiveSession(newSession);
+    }
   };
 
   const loadChat = (session: ChatSession) => setActiveSession(session);
   
   const deleteChat = (sessionIdToDelete: string) => {
     setChatHistory(prev => prev.filter(s => s.sessionId !== sessionIdToDelete));
-    if (activeSession?.sessionId === sessionIdToDelete) setActiveSession(null);
+    if (activeSession?.sessionId === sessionIdToDelete) {
+      setActiveSession(null);
+    }
   };
   
   const clearAllHistory = () => {
-    setChatHistory([]);
-    setActiveSession(null);
+    if (window.confirm("Are you sure you want to delete all chat history? This action cannot be undone.")) {
+        setChatHistory([]);
+        setActiveSession(null);
+    }
   };
 
   const goHome = () => setActiveSession(null);
@@ -54,10 +122,16 @@ export function useChat() {
     if (!input.trim() || isLoading || !activeSession) return;
 
     const userMessage: Message = { role: 'user', content: input };
-    const isFirstMessage = activeSession.messages.length === 0;
     const updatedMessages = [...activeSession.messages, userMessage];
     
-    setActiveSession(prev => ({ ...prev!, messages: updatedMessages }));
+    const updatedSession: ChatSession = { ...activeSession, messages: updatedMessages, timestamp: Date.now() };
+    setActiveSession(updatedSession);
+
+    setChatHistory(prev => 
+        prev.map(s => s.sessionId === activeSession.sessionId ? updatedSession : s)
+            .sort((a, b) => b.timestamp - a.timestamp)
+    );
+
     setInput('');
     setIsLoading(true);
 
@@ -68,24 +142,28 @@ export function useChat() {
         body: JSON.stringify({ sessionId: activeSession.sessionId, chatInput: input, role: activeSession.role })
       });
       if (!response.ok) throw new Error(`API call failed with status: ${response.status}`);
+      
       const data = await response.json();
       const assistantMessage: Message = { role: 'assistant', content: data.output || "Sorry, a connection could not be established." };
       
-      const finalMessages = [...updatedMessages, assistantMessage];
-      const finalSession: ChatSession = { ...activeSession, messages: finalMessages, timestamp: Date.now() };
+      const finalSession: ChatSession = { ...activeSession, messages: [...updatedMessages, assistantMessage], timestamp: Date.now() };
 
       setActiveSession(finalSession);
-
-      if (isFirstMessage) {
-        setChatHistory(prev => [finalSession, ...prev.filter(s => s.sessionId !== finalSession.sessionId)]);
-      } else {
-        setChatHistory(prev => prev.map(s => s.sessionId === activeSession.sessionId ? finalSession : s).sort((a,b) => b.timestamp - a.timestamp));
-      }
+      setChatHistory(prev => 
+        prev.map(s => s.sessionId === activeSession.sessionId ? finalSession : s)
+            .sort((a,b) => b.timestamp - a.timestamp)
+      );
 
     } catch (error) {
       console.error("Failed to send message:", error);
       const errorMessage: Message = { role: 'assistant', content: "A connection error occurred. Please try again." };
-      setActiveSession(prev => ({ ...prev!, messages: [...updatedMessages, errorMessage] }));
+      const errorSession = { ...activeSession, messages: [...updatedMessages, errorMessage], timestamp: Date.now() };
+      
+      setActiveSession(errorSession);
+      setChatHistory(prev => 
+        prev.map(s => s.sessionId === activeSession.sessionId ? errorSession : s)
+            .sort((a,b) => b.timestamp - a.timestamp)
+      );
     } finally {
       setIsLoading(false);
     }

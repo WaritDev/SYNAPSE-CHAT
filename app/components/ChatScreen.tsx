@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { ChatSession} from '@/app/lib/types';
+import { ChatSession, Message } from '@/app/lib/types';
 import LoadingIndicator from './LoadingIndicator';
 
 const AssistantAvatar = () => (
@@ -32,7 +32,10 @@ interface ChatScreenProps {
 export default function ChatScreen({ session, chatHistory, input, setInput, isLoading, onSendMessage, onGoHome, onLoadChat, onDeleteChat, onClearAllHistory }: ChatScreenProps) {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const nonEmptyHistory = chatHistory.filter(s => s.messages.length > 0);
+    
+    const nonEmptyHistory = chatHistory.filter(s => 
+        s.messages.length > 0 || s.sessionId === session.sessionId
+    );
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,6 +54,14 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [isSidebarOpen]);
+
+    const getLastMessagePreview = (messages: Message[]): string => {
+        if (!messages || messages.length === 0) {
+            return "New Chat";
+        }
+        const lastMessage = messages[messages.length - 1];
+        return lastMessage.content.replace(/(\*\*|__|\*|_|`|~|>|#|\[|\]|\(|\))/g, '').trim() || "New Chat";
+    };
 
     return (
         <div className="relative flex h-[100dvh] bg-[#121212] text-white overflow-hidden font-['Inter']">
@@ -95,7 +106,9 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                                 </svg>
                             </button>
                             <p className="font-semibold text-sm truncate pr-6">{s.role}</p>
-                            <p className="text-xs text-gray-400 truncate pr-6">{s.messages[0]?.content || 'New Chat'}</p>
+                            <p className="text-xs text-gray-400 truncate pr-6">
+                                {getLastMessagePreview(s.messages)}
+                            </p>
                         </div>
                     ))}
                 </div>
@@ -141,6 +154,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                         width={128} 
                         height={32} 
                         className="w-24 md:w-32 ml-auto flex-shrink-0" 
+                        onError={(e) => { e.currentTarget.src = 'https://placehold.co/128x32/121212/E50914?text=Synapse'; }}
                     />
                 </header>
 
