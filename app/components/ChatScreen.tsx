@@ -173,32 +173,47 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                                 {msg.role === 'assistant' && (
                                     <div className="max-w-[85%] md:max-w-4xl rounded-lg bg-transparent text-[#E8E8E8] min-w-0">
                                         <div className="break-words max-w-none text-[#E8E8E8]">
-                                            <ReactMarkdown 
-                                                remarkPlugins={[remarkGfm]}
-                                                components={{
-                                                    h1: ({ ...props }) => <h1 className="text-2xl md:text-3xl font-bold mb-6 mt-8 first:mt-0 text-white border-b border-[#333333] pb-3" {...props} />,
-                                                    h2: ({ ...props }) => <h2 className="text-xl md:text-2xl font-semibold mb-4 mt-8 first:mt-0 text-white" {...props} />,
-                                                    h3: ({ ...props }) => <h3 className="text-lg md:text-xl font-medium mb-3 mt-6 first:mt-0 text-white" {...props} />,
-                                                    h4: ({ ...props }) => <h4 className="text-base md:text-lg font-medium mb-2 mt-5 first:mt-0 text-white" {...props} />,
-                                                    p: ({ ...props }) => <p className="mb-6 leading-[1.7] text-[#E8E8E8] text-base md:text-lg first:mt-0" {...props} />,
-                                                    ul: ({ ...props }) => <ul className="mb-6 mt-4 space-y-2 pl-0 list-none [&>li]:relative [&>li]:pl-6 [&>li]:before:content-['•'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-[#E50914] [&>li]:before:font-bold [&>li]:before:text-lg" {...props} />,
-                                                    ol: ({ ...props }) => <ol className="mb-6 mt-4 space-y-2 list-decimal pl-6 marker:text-[#E50914] marker:font-semibold" {...props} />,
-                                                    li: ({ ...props }) => <li className="text-[#E8E8E8] leading-[1.7] text-base md:text-lg mb-2 last:mb-0" {...props} />,
-                                                    pre: ({ ...props }) => <div className="my-6 rounded-lg bg-[#1A1A1A] border border-[#333333] overflow-hidden"><pre className="p-4 overflow-x-auto text-sm md:text-base leading-[1.5] text-[#F8F8F2] m-0" {...props} /></div>,
-                                                    code: ({ ...props }) => <code className="bg-[#2A2A2A] text-[#F8F8F2] px-1.5 py-0.5 rounded text-sm md:text-base font-mono" {...props} />,
-                                                    table: ({ ...props }) => <div className="my-6 overflow-x-auto rounded-lg border border-[#333333]"><table className="min-w-full text-sm md:text-base" {...props} /></div>,
-                                                    thead: ({ ...props }) => <thead className="bg-[#1A1A1A]" {...props} />,
-                                                    th: ({ ...props }) => <th className="px-4 py-3 text-left font-semibold text-white border-b border-[#333333]" {...props} />,
-                                                    td: ({ ...props }) => <td className="px-4 py-3 border-b border-[#333333] text-[#E8E8E8] leading-[1.6]" {...props} />,
-                                                    blockquote: ({ ...props }) => <blockquote className="my-6 pl-6 border-l-4 border-[#E50914] bg-[#1A1A1A] py-4 rounded-r-lg italic text-[#D0D0D0]" {...props} />,
-                                                    a: ({ ...props }) => <a className="text-[#E50914] hover:text-[#FF1A2E] underline underline-offset-2 transition-colors" {...props} />,
-                                                    strong: ({ ...props }) => <strong className="font-semibold text-white" {...props} />,
-                                                    em: ({ ...props }) => <em className="italic text-[#F0F0F0]" {...props} />,
-                                                    hr: ({ ...props }) => <hr className="my-8 border-[#333333] border-t-2" {...props} />,
-                                                }}
-                                            >
-                                                {msg.content}
-                                            </ReactMarkdown>
+                                        <ReactMarkdown 
+                                            remarkPlugins={[remarkGfm]}
+                                            components={{
+                                                h1: ({ ...props }) => <h1 className="text-2xl md:text-3xl font-bold mb-6 mt-8 first:mt-0 text-white border-b border-[#333333] pb-3" {...props} />,
+                                                h2: ({ ...props }) => <h2 className="text-xl md:text-2xl font-semibold mb-4 mt-8 first:mt-0 text-white" {...props} />,
+                                                h3: ({ ...props }) => <h3 className="text-lg md:text-xl font-medium mb-3 mt-6 first:mt-0 text-white" {...props} />,
+                                                h4: ({ ...props }) => <h4 className="text-base md:text-lg font-medium mb-2 mt-5 first:mt-0 text-white" {...props} />,
+                                                p: ({ ...props }) => <p className="mb-6 leading-[1.7] text-[#E8E8E8] text-base md:text-lg first:mt-0" {...props} />,
+                                                ul: ({ ...props }) => <ul className="mb-6 mt-4 space-y-2 pl-0 list-none [&>li]:relative [&>li]:pl-6 [&>li]:before:content-['•'] [&>li]:before:absolute [&>li]:before:left-0 [&>li]:before:text-[#E50914] [&>li]:before:font-bold [&>li]:before:text-lg" {...props} />,
+                                                ol: ({ ...props }) => <ol className="mb-6 mt-4 space-y-2 list-decimal pl-6 marker:text-[#E50914] marker:font-semibold" {...props} />,
+                                                li: ({ ...props }) => <li className="text-[#E8E8E8] leading-[1.7] text-base md:text-lg mb-2 last:mb-0" {...props} />,
+                                                pre: ({ ...props }) => <div className="my-6 rounded-lg bg-[#1A1A1A] border border-[#333333] overflow-hidden"><pre className="p-4 overflow-x-auto text-sm md:text-base leading-[1.5] text-[#F8F8F2] m-0" {...props} /></div>,
+                                                code: ({ ...props }) => <code className="bg-[#2A2A2A] text-[#F8F8F2] px-1.5 py-0.5 rounded text-sm md:text-base font-mono" {...props} />,
+                                                table: ({ ...props }) => <div className="my-6 overflow-x-auto rounded-lg border border-[#333333]"><table className="min-w-full text-sm md:text-base" {...props} /></div>,
+                                                thead: ({ ...props }) => <thead className="bg-[#1A1A1A]" {...props} />,
+                                                th: ({ ...props }) => <th className="px-4 py-3 text-left font-semibold text-white border-b border-[#333333]" {...props} />,
+                                                td: ({ ...props }) => <td className="px-4 py-3 border-b border-[#333333] text-[#E8E8E8] leading-[1.6]" {...props} />,
+                                                blockquote: ({ ...props }) => <blockquote className="my-6 pl-6 border-l-4 border-[#E50914] bg-[#1A1A1A] py-4 rounded-r-lg italic text-[#D0D0D0]" {...props} />,
+                                                a: ({ ...props }) => <a className="text-[#E50914] hover:text-[#FF1A2E] underline underline-offset-2 transition-colors" {...props} />,
+                                                img: ({ ...props }) => {
+                                                    const src = props.src || '';
+                                                    const correctedSrc = typeof src === 'string' && src.startsWith('/public/') ? src.replace('/public/', '/') : src;
+                                                    return (
+                                                        <div className="my-4 relative w-full max-w-xl aspect-video overflow-hidden rounded-lg border border-[#333333]">
+                                                            <Image
+                                                                src={typeof correctedSrc === 'string' ? correctedSrc : ''}
+                                                                alt={props.alt || "Image from assistant"}
+                                                                fill
+                                                                style={{ objectFit: "contain" }}
+                                                                className="bg-white"
+                                                            />
+                                                        </div>
+                                                    );
+                                                },
+                                                strong: ({ ...props }) => <strong className="font-semibold text-white" {...props} />,
+                                                em: ({ ...props }) => <em className="italic text-[#F0F0F0]" {...props} />,
+                                                hr: ({ ...props }) => <hr className="my-8 border-[#333333] border-t-2" {...props} />,
+                                            }}
+                                        >
+                                            {msg.content}
+                                        </ReactMarkdown>
                                         </div>
                                     </div>
                                 )}

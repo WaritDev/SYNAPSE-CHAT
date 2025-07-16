@@ -133,6 +133,45 @@ export function useChat() {
     );
 
     setInput('');
+
+    if (input.trim() === "Start Q2 2025 inventory planning") {
+      const inventoryPlanningResponse = `![Inventory Dashboard](/public/dashboard.png)
+
+**Q2 2025 Inventory Planning Scenarios**
+
+**Scenario A: Max Stock Ahead**
+"Build up stock by 15% ahead of peak demand in December to avoid last-minute shortages."
+
+**Pros:** Ensures availability during peak season
+**Cons:** Risk of warehouse overflow, higher holding cost
+
+**Scenario B: Balanced Flow**
+"Maintain current inbound pace, but accelerate outbound by pushing sales in November to clear space."
+
+**Pros:** Avoids overflow and reduces scrap risk
+**Cons:** Requires strong coordination with Sales
+
+**Scenario C: Agile Just-in-Time**
+"Delay non-priority inbound items by 2–3 weeks and allocate WH space dynamically by demand pattern."
+
+**Pros:** Flexible and cost-effective
+**Cons:** Higher risk of stockouts, requires precise demand forecasting`;
+
+      const assistantMessage: Message = { role: 'assistant', content: inventoryPlanningResponse };
+      const finalSession: ChatSession = { 
+        ...activeSession, 
+        messages: [...updatedMessages, assistantMessage], 
+        timestamp: Date.now() 
+      };
+
+      setActiveSession(finalSession);
+      setChatHistory(prev => 
+        prev.map(s => s.sessionId === activeSession.sessionId ? finalSession : s)
+            .sort((a,b) => b.timestamp - a.timestamp)
+      );
+      return;
+    }
+
     setIsLoading(true);
 
     try {
