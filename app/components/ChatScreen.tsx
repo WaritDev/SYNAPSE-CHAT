@@ -118,7 +118,7 @@ export default function ChatScreen({ session, chatHistory, input, setInput, isLo
                         onClick={onGoHome} 
                         className="w-full px-4 py-2 bg-[#121212] border border-[#333333] rounded-lg text-sm hover:bg-[#2a2a2a] transition-colors"
                     >
-                        Select New Role
+                        Back To Home
                     </button>
                     <button 
                         onClick={onClearAllHistory} 
