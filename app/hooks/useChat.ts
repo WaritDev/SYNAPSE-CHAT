@@ -86,8 +86,9 @@ export function useChat() {
     if (existingSession) {
       setActiveSession(existingSession);
     } else {
+      const uniqueId = crypto.randomUUID();
       const newSession: ChatSession = {
-        sessionId: role,
+        sessionId: uniqueId,
         role: role,
         messages: [
           { role: 'assistant', content: `Hello! I'm your AI assistant for the **${role}** role. How can I help you today?` }
@@ -134,7 +135,7 @@ export function useChat() {
 
     setInput('');
 
-    if (input.trim() === "Start Q2 2025 inventory planning") {
+    if (input.trim().toLowerCase().includes("start")) {
       const inventoryPlanningResponse = `![Inventory Dashboard](/public/dashboard.png)
 
 **Q2 2025 Inventory Planning Scenarios**
@@ -142,21 +143,21 @@ export function useChat() {
 **Scenario A: Max Stock Ahead**
 "Build up stock by 15% ahead of peak demand in December to avoid last-minute shortages."
 
-**Pros:** Ensures availability during peak season
+**Pros:** Ensures availability during peak season  
 **Cons:** Risk of warehouse overflow, higher holding cost
 
 **Scenario B: Balanced Flow**
 "Maintain current inbound pace, but accelerate outbound by pushing sales in November to clear space."
 
-**Pros:** Avoids overflow and reduces scrap risk
+**Pros:** Avoids overflow and reduces scrap risk  
 **Cons:** Requires strong coordination with Sales
 
 **Scenario C: Agile Just-in-Time**
 "Delay non-priority inbound items by 2–3 weeks and allocate WH space dynamically by demand pattern."
 
-**Pros:** Flexible and cost-effective
-**Cons:** Higher risk of stockouts, requires precise demand forecasting`;
-
+**Pros:** Flexible and cost-effective  
+    **Cons:** Higher risk of stockouts, requires precise demand forecasting`;
+      
       const assistantMessage: Message = { role: 'assistant', content: inventoryPlanningResponse };
       const finalSession: ChatSession = { 
         ...activeSession, 
