@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SYNAPSE — GenAI Supply Chain Platform
 
-## Getting Started
+> Real-time visibility • AI forecasting • E2E traceability
 
-First, run the development server:
+SYNAPSE คือแพลตฟอร์มซัพพลายเชนที่รวม **GenAI** และ **ข้อมูลเหตุการณ์ (ERP/IoT/Logistics)** เพื่อช่วยให้องค์กรเห็นภาพรวมแบบเรียลไทม์ คาดการณ์ความเสี่ยง และติดตามวัตถุดิบ/สินค้าได้ตั้งแต่ต้นน้ำถึงปลายน้ำอย่างโปร่งใส  
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## ✨ Features
+- **Control Tower** — Dashboard แสดงสถานะซัพพลายเชนแบบเรียลไทม์  
+- **GenAI Copilot** — Q&A และ Insight อัตโนมัติ เช่น วิเคราะห์ความเสี่ยงการขนส่ง  
+- **Forecasting & Alerts** — คาดการณ์ demand/lead time และแจ้งเตือนความผิดปกติ  
+- **Traceability** — ติดตามสินค้าและบันทึก audit trail  
+- **What-if Simulation** — จำลองผลกระทบเมื่อซัพพลายเออร์/เส้นทางมีปัญหา  
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏗️ Tech Stack
+- **Frontend & API:** Next.js + TypeScript  
+- **Database:** PostgreSQL  
+- **AI Provider:** OpenAI/Anthropic (configurable)  
+- **Optional:** IoT adapters, Blockchain anchor, Object storage  
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started
+1. ติดตั้ง dependencies  
+   ```bash
+   pnpm install
+   ```
+2. รัน dev server  
+   ```bash
+   pnpm dev
+   ```
+3. เปิด [http://localhost:3000](http://localhost:3000)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 License
+Commercial © SYNAPSE — All rights reserved.  
+ติดต่อเพื่อการใช้งานเชิงพาณิชย์: TODO
