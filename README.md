@@ -1,5 +1,7 @@
 # SYNAPSE — GenAI Supply Chain Platform
 
+Demo: https://synapse-chat-lemon.vercel.app/
+
 > Real-time visibility • AI forecasting • E2E traceability
 
 SYNAPSE คือแพลตฟอร์มซัพพลายเชนที่รวม **GenAI** และ **ข้อมูลเหตุการณ์ (ERP/IoT/Logistics)** เพื่อช่วยให้องค์กรเห็นภาพรวมแบบเรียลไทม์ คาดการณ์ความเสี่ยง และติดตามวัตถุดิบ/สินค้าได้ตั้งแต่ต้นน้ำถึงปลายน้ำอย่างโปร่งใส  
